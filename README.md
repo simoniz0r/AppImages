@@ -7,8 +7,8 @@ AppImages listed here can be installed using [spm](https://github.com/simoniz0r/
 
 Current AppImages:
 
-[neofetch](https://github.com/dylanaraps/neofetch)
-
 [Discord](https://discordapp.com)
 
 [inxi](https://github.com/smxi/inxi)
+
+[neofetch](https://github.com/dylanaraps/neofetch)
