@@ -10,3 +10,5 @@ Current AppImages:
 [neofetch](https://github.com/dylanaraps/neofetch)
 
 [Discord](https://discordapp.com)
+
+[inxi](https://github.com/smxi/inxi)
