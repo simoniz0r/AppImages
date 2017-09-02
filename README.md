@@ -9,6 +9,10 @@ Current AppImages:
 
 [Discord](https://discordapp.com)
 
+[Discord PTB](https://discordapp.com)
+
+[Discord Canary](https://discordapp.com)
+
 [inxi](https://github.com/smxi/inxi)
 
 [neofetch](https://github.com/dylanaraps/neofetch)
