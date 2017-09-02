@@ -16,5 +16,3 @@ Current AppImages:
 [inxi](https://github.com/smxi/inxi)
 
 [neofetch](https://github.com/dylanaraps/neofetch)
-
-[Visual Studio Code](https://github.com/Microsoft/vscode)
