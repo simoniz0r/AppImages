@@ -17,4 +17,6 @@ Current AppImages:
 
 [inxi](https://github.com/smxi/inxi)
 
+[maim](https://github.com/naelstrof/maim)
+
 [neofetch](https://github.com/dylanaraps/neofetch)
