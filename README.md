@@ -9,6 +9,8 @@ All dependencies for AppImages built here are downloaded from Debian Wheezy's re
 
 Current AppImages:
 
+[Cantata](https://github.com/CDrummond/cantata)
+
 [Discord](https://discordapp.com)
 
 [Discord PTB](https://discordapp.com)
