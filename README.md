@@ -22,3 +22,5 @@ Current AppImages:
 [maim](https://github.com/naelstrof/maim)
 
 [neofetch](https://github.com/dylanaraps/neofetch)
+
+[speedtest-cli](https://github.com/sivel/speedtest-cli)
