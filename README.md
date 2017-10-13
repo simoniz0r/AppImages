@@ -9,6 +9,8 @@ All dependencies for AppImages built here are downloaded from Debian's repos.  T
 
 Current AppImages:
 
+[ansiweather](https://github.com/fcambus/ansiweather)
+
 [Cantata](https://github.com/CDrummond/cantata)
 
 [Discord](https://discordapp.com)
