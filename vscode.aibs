@@ -1,0 +1,130 @@
+#!/bin/bash
+# Title: spm
+# Description: Downloads and installs AppImages and precompiled tar archives.  Can also upgrade and remove installed packages.
+# Dependencies: GNU coreutils, tar, wget
+# Author: simonizor
+# Website: http://www.simonizor.gq
+# License: GPL v2.0 only
+##################################################################################################
+# aibs for vscode
+# Created by simonizor
+##################################################################################################
+
+AIBSIMG_AUTHOR="Microsoft"
+AIBSIMG_MAINTAINER="simonizor"
+AIBSIMG_DESCRIPTION="Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux."
+AIBSIMG_CATEGORY="IDE"
+AIBSIMG_WEBSITE="https://github.com/Microsoft/vscode/"
+AIBSIMG_NAME="vscode"
+AIBSIMG_SOURCE="Direct"
+AIBSIMG_SOURCE_TYPE="Binary"
+AIBSIMG_USE_WRAPPER="TRUE"
+AIBSIMG_USE_SPECIAL_INSTRUCTIONS="FALSE"
+
+aibsdepcheckfunc () {
+    if ! type ar >/dev/null 2>&1; then
+        MISSING_DEPS="TRUE"
+        echo "$(tput setaf 1)ar (binutils) is not installed!$(tput sgr0)"
+    fi
+    if [ "$MISSING_DEPS" = "TRUE" ]; then
+        echo "$(tput setaf 1)Missing one or more packages required to build $AIBSIMG_NAME; exiting...$(tput sgr0)"
+        rm -rf "$CONFDIR"/cache/*
+        exit 1
+    fi
+}
+
+aibsversionfunc () {
+    wget -S --read-timeout=30 --spider "https://go.microsoft.com/fwlink/?LinkID=620884" -o "$CONFDIR"/cache/"$AIBSIMG".latest
+    AIBSIMG_VERSION_URI="$(grep -o "Location:.*" "$CONFDIR"/cache/"$AIBSIMG".latest | cut -f2 -d" ")"
+    AIBSIMG_VERSION="$(echo "${AIBSIMG_VERSION_URI##*/}" | cut -f2 -d'_')-x86_64"
+}
+
+aibsdlsourcefunc () {
+    wget --no-verbose --read-timeout=30 "https://go.microsoft.com/fwlink/?LinkID=760868" -O "$AIBSIMG_DEPS_DIR"/vscode.deb
+}
+
+aibsdldepsfunc () {
+    LIBNOTIFY4_LATEST_DEB="$(wget "https://packages.debian.org/jessie/amd64/libnotify4/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
+    wget --no-verbose --read-timeout=30 "$LIBNOTIFY4_LATEST_DEB" -O "$AIBSIMG_DEPS_DIR"/libnotify4_0.deb
+    LIBXKBFILE1_LATEST_DEB="$(wget "https://packages.debian.org/jessie/amd64/libxkbfile1/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
+    wget --no-verbose --read-timeout=30 "$LIBXKBFILE1_LATEST_DEB" -O "$AIBSIMG_DEPS_DIR"/libxkbfile1_1.deb
+    LIBGCONF_LATEST_DEB="$(wget "https://packages.debian.org/jessie/amd64/libgconf-2-4/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
+    wget --no-verbose --read-timeout=30 "$LIBGCONF_LATEST_DEB" -O "$AIBSIMG_DEPS_DIR"/libgconf-2-4.deb
+    LIBSECRET_LATEST_DEB="$(wget "https://packages.debian.org/jessie/amd64/libsecret-1-0/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
+    wget --no-verbose --read-timeout=30 "$LIBSECRET_LATEST_DEB" -O "$AIBSIMG_DEPS_DIR"/libsecret-1-0.deb
+}
+
+aibsbuildfunc () {
+mkdir "$AIBSIMG_DEPS_DIR"/debs
+cd "$AIBSIMG_DEPS_DIR"
+debextractfunc () {
+    ar x "$AIBSIMG_DEPS_DIR"/"$1"
+    rm -f "$AIBSIMG_DEPS_DIR"/control.tar.gz
+    rm -f "$AIBSIMG_DEPS_DIR"/debian-binary
+    tar -xf "$AIBSIMG_DEPS_DIR"/data.tar.* -C "$AIBSIMG_DEPS_DIR"/debs/
+    rm -f "$AIBSIMG_DEPS_DIR"/data.tar.*
+    cp -r "$AIBSIMG_DEPS_DIR"/debs/* "$AIBSIMG_BUILD_DIR"/
+    rm -rf "$AIBSIMG_DEPS_DIR"/debs/*
+}
+debextractfunc "vscode.deb"
+debextractfunc "libnotify4_0.deb"
+debextractfunc "libxkbfile1_1.deb"
+debextractfunc "libgconf-2-4.deb"
+debextractfunc "libsecret-1-0.deb"
+mv "$AIBSIMG_BUILD_DIR"/vscode.wrapper "$AIBSIMG_BUILD_DIR"/usr/share/code/code.wrapper
+cp "$AIBSIMG_BUILD_DIR"/usr/share/code/resources/app/resources/linux/code.png "$AIBSIMG_BUILD_DIR"/code.png
+cat >"$AIBSIMG_BUILD_DIR"/code.desktop << EOL
+[Desktop Entry]
+Name=Visual Studio Code
+Comment=Code Editing. Redefined.
+GenericName=Text Editor
+Exec=././/share/code/code.wrapper %U
+Icon=code
+Type=Application
+StartupNotify=true
+StartupWMClass=Code
+Categories=Utility;TextEditor;Development;IDE;
+MimeType=text/plain;inode/directory;
+Actions=new-window;
+Keywords=vscode;
+
+X-Desktop-File-Install-Version=0.22
+
+[Desktop Action new-window]
+Name=New Window
+Name[de]=Neues Fenster
+Name[es]=Nueva ventana
+Name[fr]=Nouvelle fenêtre
+Name[it]=Nuova finestra
+Name[ja]=新規ウインドウ
+Name[ko]=새 창
+Name[ru]=Новое окно
+Name[zh_CN]=新建窗口
+Name[zh_TW]=開新視窗
+Exec=././/share/code/code --new-window %U
+Icon=code
+
+EOL
+rm -f "$AIBSIMG_BUILD_DIR"/AppRun
+cat >"$AIBSIMG_BUILD_DIR"/AppRun.conf << EOL
+APPRUN_SET_PATH="TRUE"
+APPRUN_SET_LD_LIBRARY_PATH="TRUE"
+APPRUN_SET_PYTHONPATH="FALSE"
+APPRUN_SET_PYTHONHOME="FALSE"
+APPRUN_SET_PYTHONDONTWRITEBYTECODE="FALSE"
+APPRUN_SET_XDG_DATA_DIRS="FALSE"
+APPRUN_SET_PERLLIB="FALSE"
+APPRUN_SET_GSETTINGS_SCHEMA_DIR="FALSE"
+APPRUN_SET_QT_PLUGIN_PATH="FALSE"
+APPRUN_EXEC="./usr/share/code/code.wrapper"
+
+EOL
+wget --no-verbose --read-timeout=30 "https://raw.githubusercontent.com/simoniz0r/spm-repo/aibs/resources/AppRun" -O "$AIBSIMG_BUILD_DIR"/AppRun
+chmod a+x "$AIBSIMG_BUILD_DIR"/AppRun
+}
+
+if [ "$AIBSIMG_USE_SEPCIAL_INSTRUCTIONS" = "TRUE" ]; then
+    aibsspecialfunc () {
+        echo "no special instructions"
+    }
+fi

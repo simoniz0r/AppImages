@@ -1,0 +1,148 @@
+#!/bin/bash
+# Title: spm
+# Description: Downloads and installs AppImages and precompiled tar archives.  Can also upgrade and remove installed packages.
+# Dependencies: GNU coreutils, tar, wget
+# Author: simonizor
+# Website: http://www.simonizor.gq
+# License: GPL v2.0 only
+##################################################################################################
+# aibs for yad-twitch-streamlink
+# Created by simonizor
+##################################################################################################
+
+AIBSIMG_AUTHOR="simonizor"
+AIBSIMG_MAINTAINER="simonizor"
+AIBSIMG_DESCRIPTION="yad-twitch-streamlink is a bash script using yad for a GUI that lists your live followed streamers from Twitch for playback using Streamlink."
+AIBSIMG_CATEGORY="AudioVideo"
+AIBSIMG_WEBSITE="https://github.com/simoniz0r/yad-twitch-streamlink"
+AIBSIMG_NAME="yad-twitch-streamlink"
+AIBSIMG_SOURCE="Direct"
+AIBSIMG_SOURCE_TYPE="Binary"
+AIBSIMG_USE_WRAPPER="TRUE"
+AIBSIMG_USE_SPECIAL_INSTRUCTIONS="FALSE"
+
+aibsdepcheckfunc () {
+    if ! type ar >/dev/null 2>&1; then
+        MISSING_DEPS="TRUE"
+        echo "$(tput setaf 1)ar (binutils) is not installed!$(tput sgr0)"
+    fi
+    if ! type python >/dev/null 2>&1; then
+        MISSING_DEPS="TRUE"
+        echo "$(tput setaf 1)python is not installed!$(tput sgr0)"
+    fi
+    if [ "$MISSING_DEPS" = "TRUE" ]; then
+        echo "$(tput setaf 1)Missing one or more packages required to build $AIBSIMG_NAME; exiting...$(tput sgr0)"
+        rm -rf "$CONFDIR"/cache/*
+        exit 1
+    fi
+}
+
+aibsversionfunc () {
+    if [ -z "$GITHUB_TOKEN" ]; then
+        AIBSIMG_VERSION="$(wget --quiet "https://api.github.com/repos/simoniz0r/yad-twitch-streamlink/releases" -O - | "$RUNNING_DIR"/jq -r ".[].assets[].updated_at" | head -n 1)"
+    else
+        AIBSIMG_VERSION="$(wget --quiet --auth-no-challenge --header="Authorization: token "$GITHUB_TOKEN"" "https://api.github.com/repos/simoniz0r/yad-twitch-streamlink/releases" -O - | "$RUNNING_DIR"/jq -r ".[].assets[].updated_at" | head -n 1)"
+    fi
+}
+
+aibsdlsourcefunc () {
+    wget --no-verbose "https://raw.githubusercontent.com/simoniz0r/yad-twitch-streamlink/master/yad-twitch-streamlink" -O "$AIBSIMG_SOURCE_DIR"/yad-twitch-streamlink
+}
+
+aibsdldepsfunc () {
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/y/yad/yad_0.38.2-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/yad.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/libp/libpng1.6/libpng16-16_1.6.28-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpng.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/c/cairo/libcairo2_1.14.8-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libcairo2.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/c/cairo/libcairo-gobject2_1.14.8-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libcairo-gobject2.deb
+    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/g/gdk-pixbuf/libgdk-pixbuf2.0-0_2.36.5-2+deb9u1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libgdk-pixbuf2.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/pango1.0/libpango-1.0-0_1.40.5-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpango.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/pango1.0/libpangocairo-1.0-0_1.40.5-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpangocairo.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/a/atk1.0/libatk1.0-0_2.22.0-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libatk.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/python2.7/python2.7_2.7.9-2+deb8u1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/python2.7.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/python2.7/python2.7-minimal_2.7.9-2+deb8u1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/python2.7-minimal.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/python2.7/libpython2.7_2.7.9-2+deb8u1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpython2.7.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/python2.7/libpython2.7-stdlib_2.7.9-2+deb8u1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpython2.7-stdlib.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/python2.7/libpython2.7-minimal_2.7.9-2+deb8u1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpython2.7-minimal.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/python-setuptools/python-pkg-resources_5.5.1-1_all.deb" -O "$AIBSIMG_DEPS_DIR"/python-pkg-resources.deb
+    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/w/wget/wget_1.13.4-3+deb7u5_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/wget.deb
+    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u6_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libgcrypt11.deb
+    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/g/gnutls26/libgnutls26_2.12.20-8+deb7u5_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libgnutls.deb
+    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/libt/libtasn1-3/libtasn1-3_2.13-2+deb7u5_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libtasn.deb
+    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/libi/libidn/libidn11_1.25-2+deb7u3_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libidn11.deb
+}
+
+aibsbuildfunc () {
+mkdir "$AIBSIMG_DEPS_DIR"/debs
+cd "$AIBSIMG_DEPS_DIR"
+debextractfunc () {
+    ar x "$AIBSIMG_DEPS_DIR"/"$1"
+    rm -f "$AIBSIMG_DEPS_DIR"/control.tar.gz
+    rm -f "$AIBSIMG_DEPS_DIR"/debian-binary
+    tar -xf "$AIBSIMG_DEPS_DIR"/data.tar.* -C "$AIBSIMG_DEPS_DIR"/debs/
+    rm -f "$AIBSIMG_DEPS_DIR"/data.tar.*
+    cp -r "$AIBSIMG_DEPS_DIR"/debs/* "$AIBSIMG_BUILD_DIR"/
+    rm -rf "$AIBSIMG_DEPS_DIR"/debs/*
+}
+debextractfunc "yad.deb"
+debextractfunc "libpng.deb"
+debextractfunc "libcairo2.deb"
+debextractfunc "libcairo-gobject2.deb"
+debextractfunc "libgdk-pixbuf2.deb"
+debextractfunc "libpango.deb"
+debextractfunc "libpangocairo.deb"
+debextractfunc "libatk.deb"
+debextractfunc "python2.7.deb"
+debextractfunc "python2.7-minimal.deb"
+debextractfunc "libpython2.7.deb"
+debextractfunc "libpython2.7-stdlib.deb"
+debextractfunc "libpython2.7-minimal.deb"
+debextractfunc "python-pkg-resources.deb"
+debextractfunc "wget.deb"
+debextractfunc "libgnutls.deb"
+debextractfunc "libgcrypt11.deb"
+debextractfunc "libtasn.deb"
+debextractfunc "libidn11.deb"
+mkdir "$AIBSIMG_TEMP_DIR"/usr
+python -m pip install --ignore-installed --prefix "$AIBSIMG_TEMP_DIR" streamlink
+mv "$AIBSIMG_TEMP_DIR"/lib/python2.7/site-packages "$AIBSIMG_TEMP_DIR"/lib/python2.7/dist-packages
+cp -r "$AIBSIMG_TEMP_DIR"/bin "$AIBSIMG_BUILD_DIR"/usr/
+cp -r "$AIBSIMG_TEMP_DIR"/lib "$AIBSIMG_BUILD_DIR"/usr/
+wget --no-verbose "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64" -O "$AIBSIMG_BUILD_DIR"/usr/bin/jq
+chmod a+x "$AIBSIMG_BUILD_DIR"/usr/bin/jq
+chmod a+x "$AIBSIMG_SOURCE_DIR"/yad-twitch-streamlink
+mv "$AIBSIMG_SOURCE_DIR"/yad-twitch-streamlink "$AIBSIMG_BUILD_DIR"/usr/bin/yad-twitch-streamlink
+mv "$AIBSIMG_BUILD_DIR"/yad-twitch-streamlink.wrapper "$AIBSIMG_BUILD_DIR"/usr/bin/yad-twitch-streamlink.wrapper
+cat >"$AIBSIMG_BUILD_DIR"/yad-twitch-streamlink.desktop << EOL
+[Desktop Entry]
+Type=Application
+Name=yad-twitch-streamlink
+Comment=yad-twitch-streamlink is a bash script using yad for a GUI that lists your live followed streamers from Twitch for playback using Streamlink.
+Exec=yad-twitch-streamlink.wrapper
+Icon=yad-twitch-streamlink
+Categories=Utility;
+Terminal=false
+
+EOL
+cat >"$AIBSIMG_BUILD_DIR"/AppRun.conf << EOL
+APPRUN_SET_PATH="TRUE"
+APPRUN_SET_LD_LIBRARY_PATH="TRUE"
+APPRUN_SET_PYTHONPATH="TRUE"
+APPRUN_SET_PYTHONHOME="TRUE"
+APPRUN_SET_PYTHONDONTWRITEBYTECODE="TRUE"
+APPRUN_SET_XDG_DATA_DIRS="TRUE"
+APPRUN_SET_PERLLIB="TRUE"
+APPRUN_SET_GSETTINGS_SCHEMA_DIR="TRUE"
+APPRUN_SET_QT_PLUGIN_PATH="TRUE"
+APPRUN_EXEC="./usr/bin/yad-twitch-streamlink.wrapper"
+
+EOL
+wget --no-verbose "https://github.com/simoniz0r/yad-twitch-streamlink/raw/master/ytsicon.png" -O "$AIBSIMG_BUILD_DIR"/yad-twitch-streamlink.png
+mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/64x64/apps
+cp "$AIBSIMG_BUILD_DIR"/yad-twitch-streamlink.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/64x64/apps/
+}
+
+if [ "$AIBSIMG_USE_SEPCIAL_INSTRUCTIONS" = "TRUE" ]; then
+    aibsspecialfunc () {
+        echo "no special instructions"
+    }
+fi

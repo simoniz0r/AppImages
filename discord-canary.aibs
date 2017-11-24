@@ -1,0 +1,119 @@
+#!/bin/bash
+# Title: spm
+# Description: Downloads and installs AppImages and precompiled tar archives.  Can also upgrade and remove installed packages.
+# Dependencies: GNU coreutils, tar, wget
+# Author: simonizor
+# Website: http://www.simonizor.gq
+# License: GPL v2.0 only
+##################################################################################################
+# aibs for discord-canary
+# Created by simonizor
+##################################################################################################
+
+AIBSIMG_AUTHOR="Discord"
+AIBSIMG_MAINTAINER="simonizor"
+AIBSIMG_DESCRIPTION="All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone"
+AIBSIMG_CATEGORY="Chat"
+AIBSIMG_WEBSITE="https://discordapp.com"
+AIBSIMG_NAME="discord-canary"
+AIBSIMG_SOURCE="Direct"
+AIBSIMG_SOURCE_TYPE="Binary"
+AIBSIMG_USE_WRAPPER="TRUE"
+AIBSIMG_USE_SPECIAL_INSTRUCTIONS="FALSE"
+
+aibsdepcheckfunc () {
+    if ! type ar >/dev/null 2>&1; then
+        MISSING_DEPS="TRUE"
+        echo "$(tput setaf 1)ar (binutils) is not installed!$(tput sgr0)"
+    fi
+    if [ "$MISSING_DEPS" = "TRUE" ]; then
+        echo "$(tput setaf 1)Missing one or more packages required to build $AIBSIMG_NAME; exiting...$(tput sgr0)"
+        rm -rf "$CONFDIR"/cache/*
+        exit 1
+    fi
+}
+
+aibsversionfunc () {
+    wget -S --read-timeout=30 --spider "https://discordapp.com/api/download/canary?platform=linux&format=deb" -o "$CONFDIR"/cache/"$AIBSIMG".latest
+    AIBSIMG_VERSION_URI="$(grep -o "Location:.*" "$CONFDIR"/cache/"$AIBSIMG".latest | cut -f2 -d" ")"
+    AIBSIMG_VERSION="$(echo "${AIBSIMG_VERSION_URI##*/}" | cut -f3 -d'-' | cut -f-3 -d'.')-x86_64"
+}
+
+aibsdlsourcefunc () {
+    wget --no-verbose --read-timeout=30 "https://discordapp.com/api/download/canary?platform=linux&format=deb" -O "$AIBSIMG_DEPS_DIR"/discord-canary.deb
+}
+
+aibsdldepsfunc () {
+    debiangetlatestdebfunc () {
+        DEB_RELEASE="$1"
+        DEB_NAME="$2"
+        LATEST_DEB_URL="$(wget "https://packages.debian.org/$DEB_RELEASE/amd64/$DEB_NAME/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
+        wget --no-verbose --read-timeout=30 "$LATEST_DEB_URL" -O "$AIBSIMG_DEPS_DIR"/"$DEB_NAME".deb
+    }
+    debiangetlatestdebfunc "jessie" "libc++1"
+    debiangetlatestdebfunc "jessie" "libnotify4"
+    debiangetlatestdebfunc "jessie" "libgconf-2-4"
+    debiangetlatestdebfunc "jessie" "libatomic1"
+    # wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/libx/libxss/libxss1_1.2.2-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libxss.deb
+    # wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/libx/libxtst/libxtst6_1.2.2-1+b1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libxtst.deb
+}
+
+aibsbuildfunc () {
+mkdir "$AIBSIMG_DEPS_DIR"/debs
+cd "$AIBSIMG_DEPS_DIR"
+debextractfunc () {
+    ar x "$AIBSIMG_DEPS_DIR"/"$1"
+    rm -f "$AIBSIMG_DEPS_DIR"/control.tar.gz
+    rm -f "$AIBSIMG_DEPS_DIR"/debian-binary
+    tar -xf "$AIBSIMG_DEPS_DIR"/data.tar.* -C "$AIBSIMG_DEPS_DIR"/debs/
+    rm -f "$AIBSIMG_DEPS_DIR"/data.tar.*
+    cp -r "$AIBSIMG_DEPS_DIR"/debs/* "$AIBSIMG_BUILD_DIR"/
+    rm -rf "$AIBSIMG_DEPS_DIR"/debs/*
+}
+debextractfunc "discord-canary.deb"
+debextractfunc "libc++1.deb"
+debextractfunc "libnotify4.deb"
+debextractfunc "libgconf-2-4.deb"
+debextractfunc "libatomic1.deb"
+# debextractfunc "libxss.deb"
+# debextractfunc "libxtst.deb"
+mv "$AIBSIMG_BUILD_DIR"/discord-canary.wrapper "$AIBSIMG_BUILD_DIR"/usr/bin/
+cp "$AIBSIMG_BUILD_DIR"/usr/share/discord-canary/discord.png "$AIBSIMG_BUILD_DIR"/discord-canary.png
+mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps
+cp "$AIBSIMG_BUILD_DIR"/discord-canary.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps/
+cat >"$AIBSIMG_BUILD_DIR"/discord-canary.desktop << EOL
+[Desktop Entry]
+Name=Discord Canary
+StartupWMClass=discord
+Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
+GenericName=Internet Messenger
+Exec=././/bin/discord-canary.sh
+Icon=discord-canary
+Type=Application
+StartupNotify=false
+Categories=Network;InstantMessaging;
+
+EOL
+cat >"$AIBSIMG_BUILD_DIR"/AppRun.conf << EOL
+APPRUN_SET_PATH="TRUE"
+APPRUN_SET_LD_LIBRARY_PATH="TRUE"
+APPRUN_SET_PYTHONPATH="FALSE"
+APPRUN_SET_PYTHONHOME="FALSE"
+APPRUN_SET_PYTHONDONTWRITEBYTECODE="FALSE"
+APPRUN_SET_XDG_DATA_DIRS="TRUE"
+APPRUN_SET_PERLLIB="FALSE"
+APPRUN_SET_GSETTINGS_SCHEMA_DIR="FALSE"
+APPRUN_SET_QT_PLUGIN_PATH="FALSE"
+APPRUN_EXEC="./usr/bin/discord-canary.sh"
+
+EOL
+echo '#!/bin/bash' >> "$AIBSIMG_BUILD_DIR"/usr/bin/discord-canary.sh
+echo './usr/bin/discord-canary.wrapper && sleep 15' >> "$AIBSIMG_BUILD_DIR"/usr/bin/discord-canary.sh
+chmod a+x "$AIBSIMG_BUILD_DIR"/usr/bin/discord-canary.sh
+}
+
+if [ "$AIBSIMG_USE_SEPCIAL_INSTRUCTIONS" = "TRUE" ]; then
+    aibsspecialfunc () {
+        echo "no special instructions"
+    }
+fi
