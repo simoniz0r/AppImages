@@ -49,32 +49,35 @@ aibsdlsourcefunc () {
 }
 
 aibsdldepsfunc () {
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/m/maim/maim_5.4.68-1.1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/maim.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/s/slop/slop_7.3.49-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/slop.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/g/glew/libglew2.0_2.0.0-3+b1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libglew.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_1.5.1-2_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libjpeg.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/libp/libpng1.6/libpng16-16_1.6.28-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpng.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/y/yad/yad_0.38.2-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/yad.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/c/cairo/libcairo2_1.14.0-2.1+deb8u2_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libcairo2.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/c/cairo/libcairo-gobject2_1.14.0-2.1+deb8u2_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libcairo-gobject2.deb
-    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/g/gdk-pixbuf/libgdk-pixbuf2.0-0_2.31.1-2+deb8u6_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libgdk-pixbuf2.deb
-    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/g/gdk-pixbuf/libgdk-pixbuf2.0-common_2.31.1-2+deb8u6_all.deb" -O "$AIBSIMG_DEPS_DIR"/libgdk-pixbuf2-common.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/pango1.0/libpango-1.0-0_1.36.8-3_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpango.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/pango1.0/libpangocairo-1.0-0_1.36.8-3_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpangocairo.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/p/pango1.0/libpangoft2-1.0-0_1.36.8-3_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libpangoft.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/a/atk1.0/libatk1.0-0_2.14.0-1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libatk.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/libg/libglu/libglu1-mesa_9.0.0-2_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libglu.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/x/xclip/xclip_0.12+svn84-4_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/xclip.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/g/gcc-6/libstdc++6_6.3.0-18_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libstdc++.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/g/gtk+3.0/libgtk-3-0_3.14.5-1+deb8u1_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libgtk-3.deb
-    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/i/imagemagick/imagemagick-6.q16_6.8.9.9-5+deb8u10_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/imagemagick-6.q16.deb
-    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/i/imagemagick/libmagickcore-6.q16-2_6.8.9.9-5+deb8u10_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libmagickcore-6.q16.deb
-    wget --no-verbose --read-timeout=30 "http://security.debian.org/debian-security/pool/updates/main/i/imagemagick/libmagickwand-6.q16-2_6.8.9.9-5+deb8u10_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/libmagickwand.deb
-    wget --no-verbose --read-timeout=30 "http://ftp.us.debian.org/debian/pool/main/libl/liblqr/liblqr-1-0_0.4.2-2_amd64.deb" -O "$AIBSIMG_DEPS_DIR"/liblqr.deb
-    LIBPNG12_LATEST_DEB="$(wget "https://packages.debian.org/jessie/amd64/libpng12-0/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
-    wget --no-verbose --read-timeout=30 "$LIBPNG12_LATEST_DEB" -O "$AIBSIMG_DEPS_DIR"/libpng12.deb
-    ZLIB1G_LATEST_DEB="$(wget "https://packages.debian.org/jessie/amd64/zlib1g/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
-    wget --no-verbose --read-timeout=30 "$ZLIB1G_LATEST_DEB" -O "$AIBSIMG_DEPS_DIR"/zlib1g.deb
+    debiangetlatestdebfunc () {
+        DEB_RELEASE="$1"
+        DEB_ARCH="$2"
+        DEB_NAME="$3"
+        LATEST_DEB_URL="$(wget "https://packages.debian.org/$DEB_RELEASE/$DEB_ARCH/$DEB_NAME/download" -qO - | grep "<li>*..*$DEB_ARCH.deb" | cut -f2 -d'"' | head -n 1)"
+        wget --no-verbose --read-timeout=30 "$LATEST_DEB_URL" -O "$AIBSIMG_DEPS_DIR"/"$DEB_NAME".deb
+    }
+    debiangetlatestdebfunc "stretch" amd64 "yad"
+    debiangetlatestdebfunc "stretch" all "adwaita-icon-theme"
+    debiangetlatestdebfunc "stretch" all "hicolor-icon-theme"
+    debiangetlatestdebfunc "stretch" amd64 "libatk1.0-0"
+    debiangetlatestdebfunc "stretch" amd64 "libcanberra-gtk-module"
+    debiangetlatestdebfunc "stretch" amd64 "libcairo2"
+    debiangetlatestdebfunc "stretch" amd64 "libcairo-gobject2"
+    debiangetlatestdebfunc "stretch" amd64 "libgdk-pixbuf2.0-0"
+    debiangetlatestdebfunc "stretch" all "libgdk-pixbuf2.0-common"
+    debiangetlatestdebfunc "stretch" amd64 "libglib2.0-0"
+    debiangetlatestdebfunc "stretch" amd64 "libffi6"
+    debiangetlatestdebfunc "stretch" amd64 "libpcre3"
+    debiangetlatestdebfunc "stretch" amd64 "libselinux1"
+    debiangetlatestdebfunc "stretch" amd64 "libpango-1.0-0"
+    debiangetlatestdebfunc "stretch" amd64 "libpangocairo-1.0-0"
+    debiangetlatestdebfunc "stretch" amd64 "libpangoft2-1.0-0"
+    debiangetlatestdebfunc "stretch" amd64 "libpng16-16"
+    debiangetlatestdebfunc "stretch" amd64 "libgtk-3-0"
+    debiangetlatestdebfunc "stretch" amd64 "xclip"
+    debiangetlatestdebfunc "stretch" amd64 "slop"
+    debiangetlatestdebfunc "stretch" amd64 "libglew2.0"
+    debiangetlatestdebfunc "stretch" amd64 "zlib1g"
 }
 
 aibsbuildfunc () {
@@ -89,33 +92,26 @@ debextractfunc () {
     cp -r "$AIBSIMG_DEPS_DIR"/debs/* "$AIBSIMG_BUILD_DIR"/
     rm -rf "$AIBSIMG_DEPS_DIR"/debs/*
 }
-debextractfunc "maim.deb"
 debextractfunc "slop.deb"
-debextractfunc "libglew.deb"
-debextractfunc "libjpeg.deb"
-debextractfunc "libpng.deb"
+debextractfunc "libglew2.0.deb"
 debextractfunc "yad.deb"
+debextractfunc "adwaita-icon-theme.deb"
+debextractfunc "hicolor-icon-theme.deb"
+debextractfunc "libatk1.0-0.deb"
+debextractfunc "libcanberra-gtk-module.deb"
 debextractfunc "libcairo2.deb"
 debextractfunc "libcairo-gobject2.deb"
-debextractfunc "libgdk-pixbuf2.deb"
-debextractfunc "libgdk-pixbuf2-common.deb"
-debextractfunc "libpango.deb"
-debextractfunc "libpangocairo.deb"
-debextractfunc "libpangoft.deb"
-debextractfunc "libatk.deb"
-debextractfunc "libglu.deb"
+debextractfunc "libpango-1.0-0.deb"
+debextractfunc "libpangocairo-1.0-0.deb"
+debextractfunc "libpangoft2-1.0-0.deb"
+debextractfunc "libglib2.0-0.deb"
+debextractfunc "libffi6.deb"
+debextractfunc "libpcre3.deb"
+debextractfunc "libselinux1.deb"
+debextractfunc "libpng16-16.deb"
 debextractfunc "xclip.deb"
-debextractfunc "libstdc++.deb"
-debextractfunc "libgtk-3.deb"
-debextractfunc "imagemagick-6.q16.deb"
-debextractfunc "libmagickcore-6.q16.deb"
-debextractfunc "libmagickwand.deb"
-debextractfunc "liblqr.deb"
-debextractfunc "libpng12.deb"
+debextractfunc "libgtk-3-0.deb"
 debextractfunc "zlib1g.deb"
-for file in $(ls "$AIBSIMG_BUILD_DIR"/usr/lib/x86_64-linux-gnu/ImageMagick-6.8.9/bin-Q16/); do
-    ln -s "$AIBSIMG_BUILD_DIR"/usr/lib/x86_64-linux-gnu/ImageMagick-6.8.9/bin-Q16/"$file" "$AIBSIMG_BUILD_DIR"/usr/bin/"$file"
-done
 chmod a+x "$AIBSIMG_SOURCE_DIR"/yadshot
 chmod a+x "$AIBSIMG_SOURCE_DIR"/yadshot-tray.sh
 chmod a+x "$AIBSIMG_SOURCE_DIR"/yadshot-capture.sh
@@ -136,26 +132,23 @@ Categories=Utility;
 Terminal=false
 
 EOL
-cat >"$AIBSIMG_BUILD_DIR"/AppRun.conf << EOL
-APPRUN_SET_PATH="TRUE"
-APPRUN_SET_LD_LIBRARY_PATH="TRUE"
-APPRUN_SET_PYTHONPATH="TRUE"
-APPRUN_SET_PYTHONHOME="TRUE"
-APPRUN_SET_PYTHONDONTWRITEBYTECODE="TRUE"
-APPRUN_SET_XDG_DATA_DIRS="TRUE"
-APPRUN_SET_PERLLIB="TRUE"
-APPRUN_SET_GSETTINGS_SCHEMA_DIR="TRUE"
-APPRUN_SET_QT_PLUGIN_PATH="TRUE"
-APPRUN_EXEC="./usr/bin/yadshot.sh.wrapper"
-
-EOL
 wget --no-verbose "https://a.fsdn.com/allura/p/opencamera/icon?1509129032" -O "$AIBSIMG_BUILD_DIR"/yadshot.png
 mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/48x48/apps
 cp "$AIBSIMG_BUILD_DIR"/yadshot.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/48x48/apps/
 
-rm -f "$AIBSIMG_BUILD_DIR"/AppRun
-wget --no-verbose --read-timeout=30 "https://github.com/darealshinji/AppImageKit-checkrt/releases/download/continuous/AppRun-patched-x86_64" -O "$AIBSIMG_BUILD_DIR"/AppRun
-chmod a+x "$AIBSIMG_BUILD_DIR"/AppRun
+cat >"$AIBSIMG_BUILD_DIR"/AppRun.conf << EOL
+APPRUN_SET_PATH="TRUE"
+APPRUN_SET_LD_LIBRARY_PATH="TRUE"
+APPRUN_SET_PYTHONPATH="FALSE"
+APPRUN_SET_PYTHONHOME="FALSE"
+APPRUN_SET_PYTHONDONTWRITEBYTECODE="FALSE"
+APPRUN_SET_XDG_DATA_DIRS="TRUE"
+APPRUN_SET_PERLLIB="FALSE"
+APPRUN_SET_GSETTINGS_SCHEMA_DIR="FALSE"
+APPRUN_SET_QT_PLUGIN_PATH="FALSE"
+APPRUN_EXEC="./usr/bin/yadshot.sh.wrapper"
+
+EOL
 }
 
 if [ "$AIBSIMG_USE_SEPCIAL_INSTRUCTIONS" = "TRUE" ]; then
