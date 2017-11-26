@@ -84,6 +84,7 @@ aibsbuildfunc () {
 mkdir "$AIBSIMG_DEPS_DIR"/debs
 cd "$AIBSIMG_DEPS_DIR"
 debextractfunc () {
+    echo "Extracting $1..."
     ar x "$AIBSIMG_DEPS_DIR"/"$1"
     rm -f "$AIBSIMG_DEPS_DIR"/control.tar.gz
     rm -f "$AIBSIMG_DEPS_DIR"/debian-binary
@@ -95,7 +96,6 @@ debextractfunc () {
 debextractfunc "slop.deb"
 debextractfunc "libglew2.0.deb"
 debextractfunc "yad.deb"
-debextractfunc "adwaita-icon-theme.deb"
 debextractfunc "hicolor-icon-theme.deb"
 debextractfunc "libatk1.0-0.deb"
 debextractfunc "libcanberra-gtk-module.deb"
