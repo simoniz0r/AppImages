@@ -82,11 +82,12 @@ debextractfunc "libatomic1.deb"
 # debextractfunc "libxtst.deb"
 mv "$AIBSIMG_BUILD_DIR"/discord-canary.wrapper "$AIBSIMG_BUILD_DIR"/usr/bin/
 cp "$AIBSIMG_BUILD_DIR"/usr/share/discord-canary/discord.png "$AIBSIMG_BUILD_DIR"/discord-canary.png
-mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps
-cp "$AIBSIMG_BUILD_DIR"/discord-canary.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps/
+mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps
+cp "$AIBSIMG_BUILD_DIR"/discord-canary.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps/discord-canary.png
+cp "$AIBSIMG_BUILD_DIR"/discord-canary.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps/DiscordCanary.png
 cat >"$AIBSIMG_BUILD_DIR"/discord-canary.desktop << EOL
 [Desktop Entry]
-Name=Discord Canary
+Name=DiscordCanary
 StartupWMClass=discord
 Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
 GenericName=Internet Messenger

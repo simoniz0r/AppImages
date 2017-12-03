@@ -80,15 +80,16 @@ debextractfunc "libatomic1.deb"
 # debextractfunc "libxtst.deb"
 mv "$AIBSIMG_BUILD_DIR"/discord-stable.wrapper "$AIBSIMG_BUILD_DIR"/usr/bin/discord.wrapper
 cp "$AIBSIMG_BUILD_DIR"/usr/share/discord/discord.png "$AIBSIMG_BUILD_DIR"/discord-stable.png
-mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps
-cp "$AIBSIMG_BUILD_DIR"/discord-stable.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps/
+mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps
+cp "$AIBSIMG_BUILD_DIR"/discord-stable.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps/discord-stable.png
+cp "$AIBSIMG_BUILD_DIR"/discord-stable.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps/Discord.png
 cat >"$AIBSIMG_BUILD_DIR"/discord-stable.desktop << EOL
 [Desktop Entry]
 Name=Discord
 StartupWMClass=discord
 Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
 GenericName=Internet Messenger
-Exec=././/bin/discord-stable.sh
+Exec=././/bin/discord-stable.wrapper
 Icon=discord-stable
 Type=Application
 StartupNotify=false

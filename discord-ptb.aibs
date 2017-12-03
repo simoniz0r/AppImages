@@ -82,11 +82,12 @@ debextractfunc "libatomic1.deb"
 # debextractfunc "libxtst.deb"
 mv "$AIBSIMG_BUILD_DIR"/discord-ptb.wrapper "$AIBSIMG_BUILD_DIR"/usr/bin/
 cp "$AIBSIMG_BUILD_DIR"/usr/share/discord-ptb/discord.png "$AIBSIMG_BUILD_DIR"/discord-ptb.png
-mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps
-cp "$AIBSIMG_BUILD_DIR"/discord-ptb.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/hicolor/256x256/apps/
+mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps
+cp "$AIBSIMG_BUILD_DIR"/discord-ptb.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps/discord-ptb.png
+cp "$AIBSIMG_BUILD_DIR"/discord-ptb.png "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps/DiscordPTB.png
 cat >"$AIBSIMG_BUILD_DIR"/discord-ptb.desktop << EOL
 [Desktop Entry]
-Name=Discord PTB
+Name=DiscordPTB
 StartupWMClass=discord
 Comment=All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.
 GenericName=Internet Messenger
