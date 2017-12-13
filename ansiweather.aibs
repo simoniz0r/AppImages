@@ -43,8 +43,16 @@ aibsdlsourcefunc () {
 
 aibsdldepsfunc () {
     wget --no-verbose --read-timeout=30 "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64" -O "$AIBSIMG_TEMP_DIR"/jq
-    BC_LATEST_DEB="$(wget "https://packages.debian.org/jessie/amd64/bc/download" -qO - | grep '<li>*..*amd64.deb' | cut -f2 -d'"' | head -n 1)"
-    wget "$BC_LATEST_DEB" -O "$AIBSIMG_DEPS_DIR"/bc.deb
+    debiangetlatestdebfunc () {
+        DEB_RELEASE="$1"
+        DEB_ARCH="$2"
+        DEB_NAME="$3"
+        LATEST_DEB_URL="$(wget "https://packages.debian.org/$DEB_RELEASE/$DEB_ARCH/$DEB_NAME/download" -qO - | grep "<li>*..*$DEB_ARCH.deb" | cut -f2 -d'"' | head -n 1)"
+        wget --no-verbose --read-timeout=30 "$LATEST_DEB_URL" -O "$AIBSIMG_DEPS_DIR"/"$DEB_NAME".deb
+    }
+    debiangetlatestdebfunc "jessie" "amd64" "bc"
+    debiangetlatestdebfunc "jessie" "amd64" "libreadline6"
+    debiangetlatestdebfunc "jessie" "amd64" "libtinfo5"
 }
 
 aibsbuildfunc () {
@@ -60,6 +68,8 @@ debextractfunc () {
     rm -rf "$AIBSIMG_DEPS_DIR"/debs/*
 }
 debextractfunc "bc.deb"
+debextractfunc "libreadline6.deb"
+debextractfunc "libtinfo5.deb"
 chmod a+x "$AIBSIMG_TEMP_DIR"/jq
 mv "$AIBSIMG_TEMP_DIR"/jq "$AIBSIMG_BUILD_DIR"/usr/bin/jq
 mv "$AIBSIMG_SOURCE_DIR"/ansiweather/ansiweather "$AIBSIMG_BUILD_DIR"/usr/bin/ansiweather
@@ -77,7 +87,7 @@ Terminal=true
 EOL
 cat >"$AIBSIMG_BUILD_DIR"/AppRun.conf << EOL
 APPRUN_SET_PATH="TRUE"
-APPRUN_SET_LD_LIBRARY_PATH="FALSE"
+APPRUN_SET_LD_LIBRARY_PATH="TRUE"
 APPRUN_SET_PYTHONPATH="FALSE"
 APPRUN_SET_PYTHONHOME="FALSE"
 APPRUN_SET_PYTHONDONTWRITEBYTECODE="FALSE"
