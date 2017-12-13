@@ -7,28 +7,32 @@
 # License: GPL v2.0 only
 # Script for building releases of appimagebuild
 
-BUILD_DIR="/media/simonizor/0d208b29-3b29-4ffc-99be-1043b9f3c258/github/spm_repo"
-VERSION="0.0.1"
+BUILD_DIR="/run/media/simonizor/0d208b29-3b29-4ffc-99be-1043b9f3c258/github/all-releases"
+VERSION="0.0.2"
 mkdir -p "$BUILD_DIR"/deps/extracted
 mkdir "$BUILD_DIR"/appimagebuild.AppDir
 
-wget "http://ftp.us.debian.org/debian/pool/main/b/bc/bc_1.06.95-9_amd64.deb" -O "$BUILD_DIR"/deps/bc.deb
-wget "http://ftp.us.debian.org/debian/pool/main/w/wget/wget_1.16-1+deb8u2_amd64.deb" -O "$BUILD_DIR"/deps/wget.deb
-wget "http://ftp.us.debian.org/debian/pool/main/g/gnutls28/libgnutls-deb0-28_3.3.8-6+deb8u7_amd64.deb" -O "$BUILD_DIR"/deps/libgnutls.deb
-wget "http://ftp.us.debian.org/debian/pool/main/n/nettle/libnettle4_2.7.1-5+deb8u2_amd64.deb" -O "$BUILD_DIR"/deps/libnettle.deb
-wget "http://ftp.us.debian.org/debian/pool/main/libp/libpsl/libpsl0_0.5.1-1_amd64.deb" -O "$BUILD_DIR"/deps/libpsl.deb
-wget "http://ftp.us.debian.org/debian/pool/main/i/icu/libicu52_52.1-8+deb8u5_amd64.deb" -O "$BUILD_DIR"/deps/libicu.deb
-wget "http://ftp.us.debian.org/debian/pool/main/n/nettle/libhogweed2_2.7.1-5+deb8u2_amd64.deb" -O "$BUILD_DIR"/deps/libhogweed.deb
-wget "http://ftp.us.debian.org/debian/pool/main/g/gcc-4.9/libstdc++6_4.9.2-10_amd64.deb" -O "$BUILD_DIR"/deps/libstdc++.deb
-wget "http://ftp.us.debian.org/debian/pool/main/g/gmp/libgmp10_6.0.0+dfsg-6_amd64.deb" -O "$BUILD_DIR"/deps/libgmp.deb
-#### These dependencies are for the aibs_testing branch
-wget "http://ftp.us.debian.org/debian/pool/main/b/binutils/binutils_2.25-5+deb8u1_amd64.deb" -O "$BUILD_DIR"/deps/binutils.deb
-wget "http://ftp.us.debian.org/debian/pool/main/g/git/git_2.11.0-3~bpo8+1_amd64.deb" -O "$BUILD_DIR"/deps/git.deb
-wget "http://security.debian.org/debian-security/pool/updates/main/g/git/git_2.1.4-2.1+deb8u5_amd64.deb" -O "$BUILD_DIR"/deps/git-man.deb
-wget "http://ftp.us.debian.org/debian/pool/main/c/curl/libcurl3-gnutls_7.38.0-4+deb8u5_amd64.deb" -O "$BUILD_DIR"/deps/libcurl3-gnutls.deb
-wget "http://ftp.us.debian.org/debian/pool/main/libe/liberror-perl/liberror-perl_0.17-1.1_all.deb" -O "$BUILD_DIR"/deps/liberror-perl.deb
-wget "http://ftp.us.debian.org/debian/pool/main/r/rtmpdump/librtmp1_2.4+20150115.gita107cef-1+deb8u1_amd64.deb" -O "$BUILD_DIR"/deps/librtmp.deb
-
+debiangetlatestdebfunc () {
+    DEB_RELEASE="$1"
+    DEB_ARCH="$2"
+    DEB_NAME="$3"
+    LATEST_DEB_URL="$(wget "https://packages.debian.org/$DEB_RELEASE/$DEB_ARCH/$DEB_NAME/download" -qO - | grep "<li>*..*$DEB_ARCH.deb" | cut -f2 -d'"' | head -n 1)"
+    wget --no-verbose --read-timeout=30 "$LATEST_DEB_URL" -O "$BUILD_DIR"/deps/"$DEB_NAME".deb
+}
+debiangetlatestdebfunc "buster" amd64 "wget"
+debiangetlatestdebfunc "buster" amd64 "libgnutls30"
+debiangetlatestdebfunc "buster" amd64 "libidn2-0"
+debiangetlatestdebfunc "buster" amd64 "libunistring2"
+debiangetlatestdebfunc "buster" amd64 "libnettle6"
+debiangetlatestdebfunc "buster" amd64 "libpcre3"
+debiangetlatestdebfunc "buster" amd64 "libpsl5"
+debiangetlatestdebfunc "buster" amd64 "libuuid1"
+debiangetlatestdebfunc "buster" amd64 "zlib1g"
+debiangetlatestdebfunc "buster" amd64 "binutils"
+debiangetlatestdebfunc "buster" amd64 "git"
+debiangetlatestdebfunc "buster" amd64 "libcurl3-gnutls"
+debiangetlatestdebfunc "buster" all "liberror-perl"
+debiangetlatestdebfunc "buster" all "git-man"
 cd "$BUILD_DIR"/deps/extracted
 debextractfunc () {
     ar x "$BUILD_DIR"/deps/"$1"
@@ -46,46 +50,57 @@ debextractfunc () {
     rm -rf "$BUILD_DIR"/deps/extracted/*
 }
 
-debextractfunc "bc.deb"
 debextractfunc "wget.deb"
-debextractfunc "libgnutls.deb"
-debextractfunc "libnettle.deb"
-debextractfunc "libpsl.deb"
-debextractfunc "libicu.deb"
-debextractfunc "libhogweed.deb"
-debextractfunc "libstdc++.deb"
-debextractfunc "libgmp.deb"
-#### These dependencies are for the aibs_testing branch
+debextractfunc "libgnutls30.deb"
+debextractfunc "libidn2-0.deb"
+debextractfunc "libunistring2.deb"
+debextractfunc "libnettle6.deb"
+debextractfunc "libpcre3.deb"
+debextractfunc "libpsl5.deb"
+debextractfunc "libuuid1.deb"
+debextractfunc "zlib1g.deb"
 debextractfunc "binutils.deb"
 debextractfunc "git.deb"
-debextractfunc "git-man.deb"
 debextractfunc "libcurl3-gnutls.deb"
 debextractfunc "liberror-perl.deb"
-debextractfunc "librtmp.deb"
+debextractfunc "git-man.deb"
 rm -rf "$BUILD_DIR"/deps
 
 mkdir -p "$BUILD_DIR"/appimagebuild.AppDir/usr/share/appimagebuild
 mkdir -p "$BUILD_DIR"/appimagebuild.AppDir/usr/bin
-#### This script is for the aibs_testing branch
-cp ~/github/spm_repo/appimagebuild.sh "$BUILD_DIR"/appimagebuild.AppDir/usr/bin/appimagebuild
-cp ~/github/spm_repo/LICENSE "$BUILD_DIR"/appimagebuild.AppDir/usr/share/appimagebuild/
-cp ~/github/spm_repo/jq "$BUILD_DIR"/appimagebuild.AppDir/usr/bin/
-cp ~/github/spm_repo/yaml "$BUILD_DIR"/appimagebuild.AppDir/usr/bin/
-cp ~/github/spm_repo/spm.png "$BUILD_DIR"/appimagebuild.AppDir/appimagebuild.png
+cp ~/github/AppImages/appimagebuild.sh "$BUILD_DIR"/appimagebuild.AppDir/usr/bin/appimagebuild
+cp ~/github/AppImages/LICENSE "$BUILD_DIR"/appimagebuild.AppDir/usr/share/appimagebuild/
+cp ~/github/AppImages/jq "$BUILD_DIR"/appimagebuild.AppDir/usr/bin/
+cp ~/github/AppImages/yaml "$BUILD_DIR"/appimagebuild.AppDir/usr/bin/
+cp ~/github/AppImages/spm.png "$BUILD_DIR"/appimagebuild.AppDir/appimagebuild.png
 cat >"$BUILD_DIR"/appimagebuild.AppDir/appimagebuild.desktop << EOL
 [Desktop Entry]
 Type=Application
 Encoding=UTF-8
 Name=appimagebuild
 Comment=Builds AppImages using AppImage Build Scripts
-Exec=appimagebuild
+Exec=./usr/bin/appimagebuild
 Icon=appimagebuild
 Categories=Utility;
 Terminal=true
 
 EOL
 
-wget "https://github.com/darealshinji/AppImageKit-checkrt/releases/download/continuous/AppRun-patched-x86_64" -O "$BUILD_DIR"/appimagebuild.AppDir/AppRun
+cat >"$BUILD_DIR"/AppRun.conf << EOL
+APPRUN_SET_PATH="TRUE"
+APPRUN_SET_LD_LIBRARY_PATH="TRUE"
+APPRUN_SET_PYTHONPATH="FALSE"
+APPRUN_SET_PYTHONHOME="FALSE"
+APPRUN_SET_PYTHONDONTWRITEBYTECODE="FALSE"
+APPRUN_SET_XDG_DATA_DIRS="FALSE"
+APPRUN_SET_PERLLIB="TRUE"
+APPRUN_SET_GSETTINGS_SCHEMA_DIR="FALSE"
+APPRUN_SET_QT_PLUGIN_PATH="FALSE"
+APPRUN_EXEC="./usr/bin/appimagebuild"
+
+EOL
+
+wget "https://raw.githubusercontent.com/simoniz0r/AppImages/master/resources/AppRun" -O "$BUILD_DIR"/appimagebuild.AppDir/AppRun
 chmod a+x "$BUILD_DIR"/appimagebuild.AppDir/AppRun
 
 appimagetool "$BUILD_DIR"/appimagebuild.AppDir "$BUILD_DIR"/appimagebuild-"$VERSION"-x86_64.AppImage || exit 1
