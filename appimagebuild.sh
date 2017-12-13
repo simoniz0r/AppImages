@@ -47,7 +47,7 @@ aibsbuildfunc () { # Builds specified AppImage using instructions from the aibs
     mkdir "$CONFDIR"/cache/"$AIBSIMG"_temp
     AIBSIMG_TEMP_DIR=""$CONFDIR"/cache/"$AIBSIMG"_temp"
     echo "Downloading AppRun file for running $(tput setaf 4)$AIBSIMG$(tput sgr0) AppImage..."
-    wget --no-verbose "https://raw.githubusercontent.com/simoniz0r/spm-repo/aibs/resources/AppRun" -O "$AIBSIMG_BUILD_DIR"/AppRun
+    wget --no-verbose "https://raw.githubusercontent.com/simoniz0r/AppImages/master/resources/AppRun" -O "$AIBSIMG_BUILD_DIR"/AppRun
     chmod a+x "$AIBSIMG_BUILD_DIR"/AppRun
     if [ "$AIBSIMG_USE_WRAPPER" = "TRUE" ]; then
         echo "Downloading wrapper for $(tput setaf 4)$AIBSIMG$(tput sgr0)..."
