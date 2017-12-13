@@ -38,7 +38,7 @@ aibsversionfunc () {
 }
 
 aibsdlsourcefunc () {
-    git clone https://github.com/fcambus/ansiweather.git "$AIBSIMG_SOURCE_DIR"/ansiweather
+    git clone git://github.com/fcambus/ansiweather.git "$AIBSIMG_SOURCE_DIR"/ansiweather
 }
 
 aibsdldepsfunc () {

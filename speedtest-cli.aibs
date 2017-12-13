@@ -42,7 +42,7 @@ aibsversionfunc () {
 }
 
 aibsdlsourcefunc () {
-    git clone https://github.com/sivel/speedtest-cli.git "$AIBSIMG_SOURCE_DIR"/speedtest-cli
+    git clone git://github.com/sivel/speedtest-cli.git "$AIBSIMG_SOURCE_DIR"/speedtest-cli
 }
 
 aibsdldepsfunc () {

@@ -38,7 +38,7 @@ aibsversionfunc () {
 }
 
 aibsdlsourcefunc () {
-    git clone https://github.com/smxi/inxi.git "$AIBSIMG_TEMP_DIR"/inxi
+    git clone git://github.com/smxi/inxi.git "$AIBSIMG_TEMP_DIR"/inxi
 }
 
 aibsdldepsfunc () {

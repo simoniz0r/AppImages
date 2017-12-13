@@ -38,7 +38,7 @@ aibsversionfunc () {
 }
 
 aibsdlsourcefunc () {
-    git clone https://github.com/dylanaraps/neofetch.git "$AIBSIMG_TEMP_DIR"/neofetch
+    git clone git://github.com/dylanaraps/neofetch.git "$AIBSIMG_TEMP_DIR"/neofetch
 }
 
 aibsdldepsfunc () {
