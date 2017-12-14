@@ -116,25 +116,23 @@ cat >"$AIBSIMG_BUILD_DIR"/usr/bin/discord-stable.sh << \EOL
 case $1 in
     *update*)
         if type wget >/dev/null 2>&1; then
-            APPIMAGE_URL="$(wget -qO - "https://api.github.com/repos/simoniz0r/Discord-AppImage/releases" | grep -wm1 '"browser_download_url":' | cut -f4 -d'"')"
-            APPIMAGE_NAME="$(echo $APPIMAGE_URL | cut -f9 -d"/")"
-            echo "Downloading $APPIMAGE_NAME to $HOME/Downloads ..."
+            echo "Downloading appimagebuild to build an AppImage for the latest version of Discord Stable..."
             if [ ! -d "$HOME/Downloads" ]; then
                 mkdir "$HOME"/Downloads
             fi
-            wget "$APPIMAGE_URL" -O "$HOME"/Downloads/"$APPIMAGE_NAME" && echo "$APPIMAGE_NAME downloaded to $HOME/Downloads !" || { echo "Failed to download $APPIMAGE_NAME !"; exit 1; }
-            chmod a+x "$HOME"/Downloads/"$APPIMAGE_NAME"
+            wget "https://github.com/simoniz0r/AppImages/releases/download/appimagebuild/appimagebuild-light-latest-x86_64.AppImage" -O "$HOME"/Downloads/appimagebuild && echo "Using appimagebuild to build an AppImage for the latest version of Discord Stable..." || { echo "Failed to download appimagebuild!"; exit 1; }
+            chmod a+x "$HOME"/Downloads/appimagebuild
+            "$HOME"/Downloads/appimagebuild discord-stable || { echo "Failed to build an AppImage for the latest version of Discord Stable.  Please report an issue here: https://github.com/simoniz0r/AppImages/issues"; rm -rf "$HOME"/Downloads/discord-stable.AppDir; rm -f "$HOME"/Downloads/appimagebuild; exit 1; }
         elif type curl >/dev/null 2>&1; then
-            APPIMAGE_URL="$(curl -s "https://api.github.com/repos/simoniz0r/Discord-AppImage/releases" | grep -wm1 '"browser_download_url":' | cut -f4 -d'"')"
-            APPIMAGE_NAME="$(echo $APPIMAGE_URL | cut -f9 -d"/")"
-            echo "Downloading $APPIMAGE_NAME to $HOME/Downloads ..."
+            echo "Downloading appimagebuild to build an AppImage for the latest version of Discord Stable..."
             if [ ! -d "$HOME/Downloads" ]; then
                 mkdir "$HOME"/Downloads
             fi
-            curl -L -o "$HOME"/Downloads/"$APPIMAGE_NAME" "$APPIMAGE_URL" && echo "$APPIMAGE_NAME downloaded to $HOME/Downloads !" || { echo "Failed to download $APPIMAGE_NAME !"; exit 1; }
-            chmod a+x "$HOME"/Downloads/"$APPIMAGE_NAME"
+            curl -L -o "$HOME"/Downloads/appimagebuild "https://github.com/simoniz0r/AppImages/releases/download/appimagebuild/appimagebuild-light-latest-x86_64.AppImage" && echo "Using appimagebuild to build an AppImage for the latest version of Discord Stable..." || { echo "Failed to download appimagebuild!"; exit 1; }
+            chmod a+x "$HOME"/Downloads/appimagebuild
+            "$HOME"/Downloads/appimagebuild discord-stable || { echo "Failed to build an AppImage for the latest version of Discord Stable.  Please report an issue here: https://github.com/simoniz0r/AppImages/issues"; rm -rf "$HOME"/Downloads/discord-stable.AppDir; rm -f "$HOME"/Downloads/appimagebuild; exit 1; }
         else
-            echo "Cannot download new version of Discord; curl or wget not installed!"
+            echo "Cannot download appimagebuild to build an AppImage for new version of Discord Stable; curl or wget not installed!"
             exit 1
         fi
         ;;
