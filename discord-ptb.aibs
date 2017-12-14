@@ -78,8 +78,11 @@ debextractfunc "libc++1.deb"
 debextractfunc "libnotify4.deb"
 debextractfunc "libgconf-2-4.deb"
 debextractfunc "libatomic1.deb"
-# debextractfunc "libxss.deb"
-# debextractfunc "libxtst.deb"
+debextractfunc "libxss1.deb"
+debextractfunc "libxtst6.deb"
+debextractfunc "libappindicator1.deb"
+debextractfunc "libnspr4.deb"
+debextractfunc "libnss3.deb"
 mv "$AIBSIMG_BUILD_DIR"/discord-ptb.wrapper "$AIBSIMG_BUILD_DIR"/usr/bin/
 cp "$AIBSIMG_BUILD_DIR"/usr/share/discord-ptb/discord.png "$AIBSIMG_BUILD_DIR"/discord-ptb.png
 mkdir -p "$AIBSIMG_BUILD_DIR"/usr/share/icons/default/256x256/apps
