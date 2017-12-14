@@ -111,8 +111,40 @@ APPRUN_SET_QT_PLUGIN_PATH="FALSE"
 APPRUN_EXEC="./usr/bin/discord-canary.sh"
 
 EOL
-echo '#!/bin/bash' >> "$AIBSIMG_BUILD_DIR"/usr/bin/discord-canary.sh
-echo './usr/bin/discord-canary.wrapper && sleep 15' >> "$AIBSIMG_BUILD_DIR"/usr/bin/discord-canary.sh
+cat >"$AIBSIMG_BUILD_DIR"/usr/bin/discord-canary.sh << \EOL
+#!/bin/bash
+
+case $1 in
+    *update*)
+        if type wget >/dev/null 2>&1; then
+            APPIMAGE_URL="$(wget -qO - "https://api.github.com/repos/simoniz0r/Discord-Canary-AppImage/releases" | grep -wm1 '"browser_download_url":' | cut -f4 -d'"')"
+            APPIMAGE_NAME="$(echo $APPIMAGE_URL | cut -f9 -d"/")"
+            echo "Downloading $APPIMAGE_NAME to $HOME/Downloads ..."
+            if [ ! -d "$HOME/Downloads" ]; then
+                mkdir "$HOME"/Downloads
+            fi
+            wget "$APPIMAGE_URL" -O "$HOME"/Downloads/"$APPIMAGE_NAME" && echo "$APPIMAGE_NAME downloaded to $HOME/Downloads !" || { echo "Failed to download $APPIMAGE_NAME !"; exit 1; }
+            chmod a+x "$HOME"/Downloads/"$APPIMAGE_NAME"
+        elif type curl >/dev/null 2>&1; then
+            APPIMAGE_URL="$(curl -s "https://api.github.com/repos/simoniz0r/Discord-Canary-AppImage/releases" | grep -wm1 '"browser_download_url":' | cut -f4 -d'"')"
+            APPIMAGE_NAME="$(echo $APPIMAGE_URL | cut -f9 -d"/")"
+            echo "Downloading $APPIMAGE_NAME to $HOME/Downloads ..."
+            if [ ! -d "$HOME/Downloads" ]; then
+                mkdir "$HOME"/Downloads
+            fi
+            curl -L -o "$HOME"/Downloads/"$APPIMAGE_NAME" "$APPIMAGE_URL" && echo "$APPIMAGE_NAME downloaded to $HOME/Downloads !" || { echo "Failed to download $APPIMAGE_NAME !"; exit 1; }
+            chmod a+x "$HOME"/Downloads/"$APPIMAGE_NAME"
+        else
+            echo "Cannot download new version of Discord; curl or wget not installed!"
+            exit 1
+        fi
+        ;;
+    *)
+        ./usr/bin/discord-canary.wrapper && sleep 60
+        ;;
+esac
+
+EOL
 chmod a+x "$AIBSIMG_BUILD_DIR"/usr/bin/discord-canary.sh
 }
 
