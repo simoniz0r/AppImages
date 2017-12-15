@@ -127,7 +127,9 @@ case $1 in
             fi
             wget "https://github.com/simoniz0r/AppImages/releases/download/appimagebuild/appimagebuild-light-latest-x86_64.AppImage" -O "$HOME"/Downloads/appimagebuild && echo "Using appimagebuild to build an AppImage for the latest version of Discord PTB..." || { echo "Failed to download appimagebuild!"; exit 1; }
             chmod a+x "$HOME"/Downloads/appimagebuild
-            "$HOME"/Downloads/appimagebuild discord-ptb || { echo "Failed to build an AppImage for the latest version of Discord PTB.  Please report an issue here: https://github.com/simoniz0r/AppImages/issues"; rm -rf "$HOME"/Downloads/discord-ptb.AppDir; rm -f "$HOME"/Downloads/appimagebuild; exit 1; }
+            "$HOME"/Downloads/appimagebuild discord-ptb || { echo "Failed to build an AppImage for the latest version of Discord PTB.  Please report an issue here: https://github.com/simoniz0r/AppImages/issues"; rm -f "$HOME"/Downloads/appimagebuild; exit 1; }
+            rm -f "$HOME"/Downloads/appimagebuild
+            exit 0
         elif type curl >/dev/null 2>&1; then
             echo "Downloading appimagebuild to build an AppImage for the latest version of Discord PTB..."
             if [ ! -d "$HOME/Downloads" ]; then
