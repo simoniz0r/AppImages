@@ -135,14 +135,16 @@ case $1 in
             fi
             curl -L -o "$HOME"/Downloads/appimagebuild "https://github.com/simoniz0r/AppImages/releases/download/appimagebuild/appimagebuild-light-latest-x86_64.AppImage" && echo "Using appimagebuild to build an AppImage for the latest version of Discord PTB..." || { echo "Failed to download appimagebuild!"; exit 1; }
             chmod a+x "$HOME"/Downloads/appimagebuild
-            "$HOME"/Downloads/appimagebuild discord-ptb || { echo "Failed to build an AppImage for the latest version of Discord PTB.  Please report an issue here: https://github.com/simoniz0r/AppImages/issues"; rm -rf "$HOME"/Downloads/discord-ptb.AppDir; rm -f "$HOME"/Downloads/appimagebuild; exit 1; }
+            "$HOME"/Downloads/appimagebuild discord-ptb || { echo "Failed to build an AppImage for the latest version of Discord PTB.  Please report an issue here: https://github.com/simoniz0r/AppImages/issues"; rm -f "$HOME"/Downloads/appimagebuild; exit 1; }
+            rm -f "$HOME"/Downloads/appimagebuild
+            exit 0
         else
             echo "Cannot download appimagebuild to build an AppImage for new version of Discord PTB; curl or wget not installed!"
             exit 1
         fi
         ;;
     --remove)
-        ./usr/bin/discord-ptb.wrapper --remove-appimage-desktop-integration && echo "Removed .desktop file and icon for menu integration for Discord Canary." || echo "Failed to remove .desktop file and icon!"
+        ./usr/bin/discord-ptb.wrapper --remove-appimage-desktop-integration && echo "Removed .desktop file and icon for menu integration for Discord PTB." || echo "Failed to remove .desktop file and icon!"
         exit 0
         ;;
     --help)
