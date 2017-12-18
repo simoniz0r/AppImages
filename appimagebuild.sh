@@ -79,7 +79,7 @@ Usage appimagebuild [argument] [input]
 
 appimagebuild is a tool for easily creating AppImages using AppImage Build Scripts (aibs).
 The aibs for building the selected AppImage will either be downloaded from appimagebuild's github
-repo or it can be sourced in locally.  If no output path is specified, $HOME/downloads will be used
+repo or it can be sourced in locally.  If no output path is specified, $HOME/Downloads will be used
 by default.
 
 Arguments:
