@@ -7,7 +7,7 @@
 # Website: http://www.simonizor.gq
 # License: GPL v2.0 only
 
-X="0.0.1"
+X="0.0.3"
 # Set appimagebuild version
 CONFDIR="$HOME/.config/appimagebuild"
 
@@ -73,33 +73,77 @@ aibsbuildfunc () { # Builds specified AppImage using instructions from the aibs
     echo "AppImage for $(tput setaf 4)$AIBSIMG$(tput sgr0) has been built!"
 }
 
-if [ -z "$1" ]; then
+aibshelpfunc () {
+printf '%s\n' "appimagebuild $X
+Usage appimagebuild [argument] [input]
+
+appimagebuild is a tool for easily creating AppImages using AppImage Build Scripts (aibs).
+The aibs for building the selected AppImage will either be downloaded from appimagebuild's github
+repo or it can be sourced in locally.  If no output path is specified, $HOME/downloads will be used
+by default.
+
+Arguments:
+    -n    - Specify the name of the AppImage to build (required)
+    -l    - Use a local script to build an AppImage (optional; if used, must be followed by the full path to the aibs)
+    -o    - Specify the output directory of the AppImage (optional; if used, must be followed by the full output path)
+
+Examples:
+    appimagebuild -n discord-stable
+    appimagebuild -n discord-stable -o $HOME/AppImages
+    appimagebuild -n discord-stable -l $HOME/discord-stable.aibs
+    appimagebuild -n discord-stable -l $HOME/discord-stable.aibs -o $HOME/AppImages"
+}
+
+if [ -z "$3" ]; then
+    case $1 in
+        -n)
+            shift
+            AIBSIMG="$1"
+            echo "Downloading aibs for $(tput setaf 4)$AIBSIMG$(tput sgr0)..."
+            aibsdlfunc || { echo "aibs download failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
+            ;;
+        -h*|--h*)
+            rm -rf "$CONFDIR"/cache/*
+            aibshelpfunc
+            exit 0
+            ;;
+        *)
+            echo "$(tput setaf 1)Package input required; exiting...$(tput sgr0)"
+            rm -rf "$CONFDIR"/cache/*
+            echo
+            aibshelpfunc
+            exit 1
+            ;;
+    esac
+else
+    for arg in "$@"; do
+        case $arg in
+            -n)
+                shift
+                AIBSIMG="$1"
+                shift
+                ;;
+            -o)
+                shift
+                OUTPUT_DIR="$1"
+                shift
+                ;;
+            -l)
+                shift
+                echo "Sourcing in aibs from $(tput setaf 4)$1$(tput sgr0)..."
+                cp "$1" "$CONFDIR"/cache/"$AIBSIMG".aibs || { echo "Failed to source aibs; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
+                shift
+                ;;
+        esac
+    done
+fi
+if [ -z "$AIBSIMG" ]; then
     echo "$(tput setaf 1)Package input required; exiting...$(tput sgr0)"
     rm -rf "$CONFDIR"/cache/*
+    echo
+    aibshelpfunc
     exit 1
 fi
-AIBSIMG="$1"
-case $AIBSIMG in
-    -l*)
-        AIBSIMG="$2"
-        if [ -z "$4" ]; then
-            OUTPUT_DIR="$HOME/Downloads"
-        else
-            OUTPUT_DIR="$4"
-        fi
-        echo "Using local script $3 to build AppImage for $2..."
-        cp "$3" "$CONFDIR"/cache/"$AIBSIMG".aibs || { echo "aibs copy failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
-        ;;
-    *)
-        if [ -z "$2" ]; then
-            OUTPUT_DIR="$HOME/Downloads"
-        else
-            OUTPUT_DIR="$2"
-        fi
-        echo "Downloading aibs for $(tput setaf 4)$AIBSIMG$(tput sgr0)..."
-        aibsdlfunc || { echo "aibs download failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
-        ;;
-esac
 aibsbuildfunc || { echo "AppImage build failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
 if [ -f "$CONFDIR/cache/$AIBSIMG_NAME-$AIBSIMG_VERSION.AppImage" ]; then
     echo "Moving $(tput setaf 4)$AIBSIMG$(tput sgr0) AppImage to $OUTPUT_DIR"
