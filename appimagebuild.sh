@@ -10,6 +10,7 @@
 X="0.0.3"
 # Set appimagebuild version
 CONFDIR="$HOME/.config/appimagebuild"
+OUTPUT_DIR="$HOME/Downloads"
 
 if [ ! -d "$CONFDIR" ]; then
     mkdir -p "$CONFDIR"/cache
@@ -94,7 +95,11 @@ Examples:
     appimagebuild -n discord-stable -l $HOME/discord-stable.aibs -o $HOME/AppImages"
 }
 
-if [ -z "$3" ]; then
+if [ -z "$2" ]; then
+    AIBSIMG="$1"
+    echo "Downloading aibs for $(tput setaf 4)$AIBSIMG$(tput sgr0)..."
+    aibsdlfunc || { echo "aibs download failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
+elif [ -z "$3" ]; then
     case $1 in
         -n)
             shift
