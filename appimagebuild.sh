@@ -96,9 +96,18 @@ Examples:
 }
 
 if [ -z "$2" ]; then
-    AIBSIMG="$1"
-    echo "Downloading aibs for $(tput setaf 4)$AIBSIMG$(tput sgr0)..."
-    aibsdlfunc || { echo "aibs download failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
+    case $1 in
+        -h*|--h*)
+            rm -rf "$CONFDIR"/cache/*
+            aibshelpfunc
+            exit 0
+            ;;
+        *)
+            AIBSIMG="$1"
+            echo "Downloading aibs for $(tput setaf 4)$AIBSIMG$(tput sgr0)..."
+            aibsdlfunc || { echo "aibs download failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
+            ;;
+    esac
 elif [ -z "$3" ]; then
     case $1 in
         -n)
@@ -106,11 +115,6 @@ elif [ -z "$3" ]; then
             AIBSIMG="$1"
             echo "Downloading aibs for $(tput setaf 4)$AIBSIMG$(tput sgr0)..."
             aibsdlfunc || { echo "aibs download failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
-            ;;
-        -h*|--h*)
-            rm -rf "$CONFDIR"/cache/*
-            aibshelpfunc
-            exit 0
             ;;
         *)
             echo "$(tput setaf 1)Package input required; exiting...$(tput sgr0)"
