@@ -8,7 +8,7 @@
 # Script for building releases of appimagebuild
 
 BUILD_DIR="/run/media/simonizor/0d208b29-3b29-4ffc-99be-1043b9f3c258/github/all-releases"
-VERSION="0.0.2"
+VERSION="0.0.3"
 mkdir -p "$BUILD_DIR"/deps/extracted
 mkdir "$BUILD_DIR"/appimagebuild.AppDir
 
