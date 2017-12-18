@@ -144,6 +144,9 @@ if [ -z "$AIBSIMG" ]; then
     aibshelpfunc
     exit 1
 fi
+if [ ! -f "$CONFDIR/cache/$AIBSIMG.aibs" ]; then
+    aibsdlfunc || { echo "aibs download failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
+fi
 aibsbuildfunc || { echo "AppImage build failed; exiting..."; rm -rf "$CONFDIR"/cache/*; exit 1; }
 if [ -f "$CONFDIR/cache/$AIBSIMG_NAME-$AIBSIMG_VERSION.AppImage" ]; then
     echo "Moving $(tput setaf 4)$AIBSIMG$(tput sgr0) AppImage to $OUTPUT_DIR"
