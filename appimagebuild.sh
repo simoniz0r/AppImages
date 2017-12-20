@@ -95,6 +95,13 @@ Examples:
     appimagebuild -n discord-stable -l $HOME/discord-stable.aibs -o $HOME/AppImages"
 }
 
+if [ -z "$1" ]; then
+    echo "$(tput setaf 1)Package input required; exiting...$(tput sgr0)"
+    rm -rf "$CONFDIR"/cache/*
+    echo
+    aibshelpfunc
+    exit 1
+fi
 if [ -z "$2" ]; then
     case $1 in
         -h*|--h*)
