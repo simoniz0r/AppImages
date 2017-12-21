@@ -21,6 +21,7 @@ debiangetlatestdebfunc () {
 }
 debiangetlatestdebfunc "buster" amd64 "wget"
 debiangetlatestdebfunc "buster" amd64 "libgnutls30"
+debiangetlatestdebfunc "buster" amd64 "libhogweed4"
 debiangetlatestdebfunc "buster" amd64 "libidn2-0"
 debiangetlatestdebfunc "buster" amd64 "libunistring2"
 debiangetlatestdebfunc "buster" amd64 "libnettle6"
@@ -52,6 +53,7 @@ debextractfunc () {
 
 debextractfunc "wget.deb"
 debextractfunc "libgnutls30.deb"
+debextractfunc "libhogweed4.deb"
 debextractfunc "libidn2-0.deb"
 debextractfunc "libunistring2.deb"
 debextractfunc "libnettle6.deb"
